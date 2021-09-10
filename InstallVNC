@@ -1,0 +1,21 @@
+#!/bin/bash
+
+sudo apt-get install x11vnc -y
+sudo x11vnc -storepasswd /etc/x11vnc.pass 
+
+cat > /lib/systemd/system/x11vnc.service << EOF
+[Unit]
+Description=Start x11vnc at startup.
+After=multi-user.target
+[Service]
+Type=simple
+ExecStart=/usr/bin/x11vnc -auth guess -forever -loop -noxdamage -repeat -rfbauth /etc/x11vnc.pass -rfbport 5900 -shared
+[Install]
+WantedBy=multi-user.target
+EOF
+
+echo "Configure Services"
+sudo systemctl enable x11vnc.service
+
+sleep  5s
+sudo reboot
