@@ -1,0 +1,16 @@
+FROM debian:10 as builder
+
+ENV NGINX_VER 1.21.1
+
+RUN apt update && apt install -y libpcre3 libpcre3-dev openssl libssl-dev zlib1g-dev wget gcc make
+RUN wget http://nginx.org/download/nginx-${NGINX_VER}.tar.gz -O nginx.tar.gz && \
+        tar -xvf nginx.tar.gz && \
+        cd nginx-${NGINX_VER} && ./configure && \
+        make && make install
+
+FROM debian:10
+
+WORKDIR /usr/local/nginx/sbin
+COPY --from=builder /usr/local/nginx/sbin/nginx .
+RUN mkdir ../logs ../conf && touch ../logs/error.log && chmod +x nginx
+CMD ["./nginx", "-g", "daemon off;"]
