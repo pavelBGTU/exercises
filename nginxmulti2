@@ -1,0 +1,25 @@
+  GNU nano 5.4                                                                      Dockerfile                                                                               FROM debian:10 as builder
+
+ENV LUA_VER 0.10.20
+ENV NGINX_VER 1.21.1
+
+RUN apt update && apt install -y libpcre3 libpcre3-dev openssl libssl-dev zlib1g-dev wget gcc make
+RUN wget http://nginx.org/download/nginx-${NGINX_VER}.tar.gz -O nginx.tar.gz && \
+        tar -xvf nginx.tar.gz && \
+        cd nginx-${NGINX_VER} && \
+        wget https://github.com/openresty/lua-nginx-module/archive/refs/tags/v${LUA_VER}.tar.gz -O Lua.tar.gz && \
+        tar -xvf Lua.tar.gz  && \
+        LUA_DIR="$(pwd)/lua-nginx-module-${LUA_VER}" && \
+        ./configure && --add-module=$LUA_DIR && \make && make install
+
+#FROM debian:10
+
+#WORKDIR /usr/local/nginx/sbin
+#COPY --from=builder /usr/local/nginx/sbin/nginx .
+#RUN mkdir ../logs ../conf && touch ../logs/error.log && chmod +x nginx
+#CMD ["./nginx", "-g", "daemon off;"]
+
+
+
+
+
