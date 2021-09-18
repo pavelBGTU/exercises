@@ -1,4 +1,4 @@
-  GNU nano 5.4                                                                      Dockerfile                                                                               FROM debian:10 as builder
+FROM debian:10 as builder
 
 ENV LUA_VER 0.10.20
 ENV NGINX_VER 1.21.1
